@@ -17,6 +17,7 @@ GLuint loadShaderFromFile(const std::string& filename, SHADER_TYPE shaderType)
   file.open(filename.c_str(), std::ios::in);
   if (!file)
   {
+	  cout << "File could not be loaded" << endl;
     return 0;
   }
 
@@ -72,7 +73,7 @@ bool checkForLinkErrors(GLuint program)
     glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
     //The maxLength includes the NULL character
     string infoLog;
-    glGetShaderInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+    glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
     cout << "Shader not linked " << infoLog << endl;
     //We don't need the shader anymore.
     glDeleteProgram(program);
