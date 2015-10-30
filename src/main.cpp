@@ -3,7 +3,10 @@
 #include "Vertices.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "FBXLoader.h"
 #include "FileSystem.h"
+#include "Mesh.h"
+
 
 
 Vertex verts[] = {
@@ -73,10 +76,16 @@ GLuint EBO;
 GLuint VAO;
 GLuint shaderProgram;
 
+MeshData currentMesh;
+
 GLuint diffuseMap;
 
 void initScene()
 {
+    
+    string modelPath = ASSET_PATH + MODEL_PATH + "/armoredrecon.fbx";
+    loadFBXFromFile(modelPath, &currentMesh);
+    
 	//load texture & bind
 	string texturePath = ASSET_PATH + TEXTURE_PATH + "/texture.png";
 	diffuseMap = loadTextureFromFile(texturePath);
@@ -93,14 +102,15 @@ void initScene()
 	glBindVertexArray(VAO);
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+    
+    glBufferData(GL_ARRAY_BUFFER, currentMesh.getNumVerts()*sizeof(Vertex), &currentMesh.vertices[0], GL_STATIC_DRAW);
 
 	//create buffer
 	glGenBuffers(1, &EBO);
 	//Make the EBO active
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	//Copy Index data to the EBO
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, currentMesh.getNumIndices()*sizeof(int), &currentMesh.indices[0], GL_STATIC_DRAW);
 
 	//Tell the shader that 0 is the position element
 	glEnableVertexAttribArray(0);
@@ -113,12 +123,12 @@ void initScene()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(sizeof(vec3) + sizeof(vec4)));
 
 	GLuint vertexShaderProgram = 0;
-	string vsPath = ASSET_PATH + SHADER_PATH + "/textureVS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/simpleVS.glsl";
 	vertexShaderProgram = loadShaderFromFile(vsPath, VERTEX_SHADER);
 	checkForCompilerErrors(vertexShaderProgram);
 
 	GLuint fragmentShaderProgram = 0;
-	string fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/simpleFS.glsl";
 	fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
 	checkForCompilerErrors(fragmentShaderProgram);
 
@@ -179,7 +189,7 @@ void render()
 
 	glBindVertexArray(VAO);
 
-	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, currentMesh.getNumIndices(), GL_UNSIGNED_INT, 0);
 }
 
 int main(int argc, char * arg[])

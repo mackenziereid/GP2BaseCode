@@ -27,6 +27,7 @@
 /Users/MHReid/Documents/GP2-Labs/GP2BaseCode/_ex5_Working/CMakeFiles/3.3.2/CMakeCCompiler.cmake\
 /Users/MHReid/Documents/GP2-Labs/GP2BaseCode/_ex5_Working/CMakeFiles/3.3.2/CMakeCXXCompiler.cmake\
 /Users/MHReid/Documents/GP2-Labs/GP2BaseCode/_ex5_Working/CMakeFiles/3.3.2/CMakeSystem.cmake\
+/Users/MHReid/Documents/GP2-Labs/GP2BaseCode/cmake/FindFBX.cmake\
 /Users/MHReid/Documents/GP2-Labs/GP2BaseCode/cmake/FindGLM.cmake\
 /Users/MHReid/Documents/GP2-Labs/GP2BaseCode/cmake/FindSDL2.cmake\
 /Users/MHReid/Documents/GP2-Labs/GP2BaseCode/cmake/FindSDL2_Image.cmake
