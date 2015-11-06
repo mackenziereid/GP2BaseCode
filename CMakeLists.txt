@@ -7,14 +7,19 @@ list( APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(GLM REQUIRED)
 
 
-add_executable(GP2BaseCode src/main.cpp src/Graphics.cpp include/Common.h include/Graphics.h)
+add_executable(GP2BaseCode src/main.cpp src/Graphics.cpp src/Shader.cpp include/Common.h include/Graphics.h include/Vertex.h include/Shader.h)
 target_link_libraries(GP2BaseCode ${SDL2_LIBRARY} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
-include_directories(GP2BaseCode include/ ${OPENGL_INCLUDE_DIRS} ${SDL2_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS})
+include_directories(GP2BaseCode include/ ${OPENGL_INCLUDE_DIRS} ${SDL2_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS})
 
 if (MSVC)
 add_custom_command(TARGET GP2BaseCode POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
                        ${CMAKE_SOURCE_DIR}/dlls $<TARGET_FILE_DIR:GP2BaseCode>)
 endif (MSVC)
+
+add_custom_command(TARGET GP2BaseCode POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory
+${CMAKE_SOURCE_DIR}/assets
+$<TARGET_FILE_DIR:GP2BaseCode>/assets)

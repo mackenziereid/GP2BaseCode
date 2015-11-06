@@ -1,37 +1,40 @@
 #include "Common.h"
 #include "Graphics.h"
 #include "Vertex.h"
+#include "Shader.h"
 
 float xpos = 0;
 float ypos = 0;
 
+GLuint shaderProgram = 0;
+
 Vertex verts[] = {
     //front
-    {-0.5f, 0.5f, 0.5f,
-    1.0f, 1.0f, 1.0f, 1.0f}, //top left
+    {vec3{-0.5f, 0.5f, 0.5f},
+    vec4{1.0f, 1.0f, 1.0f, 1.0f}}, //top left
     
-    {-0.5f, -0.5f, 0.5f,
-    1.0f, 1.0f, 1.0f, 1.0f}, //bottom left
+    {vec3{-0.5f, -0.5f, 0.5f},
+    vec4{1.0f, 1.0f, 1.0f, 1.0f}}, //bottom left
     
-    {0.5f, -0.5f, 0.5f,
-    1.0f, 1.0f, 1.0f, 1.0f}, //bottom right
+    {vec3{0.5f, -0.5f, 0.5f},
+    vec4{1.0f, 1.0f, 1.0f, 1.0f}}, //bottom right
     
-    {0.5f, 0.5f, 0.5f,
-    1.0f, 1.0f, 1.0f, 1.0f}, //top right
+    {vec3{0.5f, 0.5f, 0.5f},
+    vec4{1.0f, 1.0f, 1.0f, 1.0f}}, //top right
     
     
     //back
-    {-0.5f, 0.5f, -0.5f,
-    1.0f, 1.0f, 1.0f, 1.0f}, //top left
+    {vec3{-0.5f, 0.5f, -0.5f},
+    vec4{1.0f, 1.0f, 1.0f, 1.0f}}, //top left
     
-    {-0.5f, -0.5f, -0.5f,
-    1.0f, 1.0f, 1.0f, 1.0f}, //bottom left
+    {vec3{-0.5f, -0.5f, -0.5f},
+    vec4{1.0f, 1.0f, 1.0f, 1.0f}}, //bottom left
     
-    {0.5f, -0.5f, -0.5f,
-    1.0f, 1.0f, 1.0f, 1.0f}, //bottom right
+    {vec3{0.5f, -0.5f, -0.5f},
+    vec4{1.0f, 1.0f, 1.0f, 1.0f}}, //bottom right
     
-    {0.5f, 0.5f, -0.5f,
-    1.0f, 1.0f, 1.0f, 1.0f}, //top right
+    {vec3{0.5f, 0.5f, -0.5f},
+    vec4{1.0f, 1.0f, 1.0f, 1.0f}}, //top right
     
     
     
@@ -64,6 +67,13 @@ GLuint indices[] = {
 };
 
 
+//matrices
+mat4 viewMatrix;
+mat4 projMatrix;
+mat4 worldMatrix;
+mat4 MVPMatrix;
+
+GLuint VAO;
 GLuint VBO;
 GLuint EBO;
 
@@ -73,61 +83,36 @@ void render()
     glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
     //clear the color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glUseProgram(shaderProgram);
+    
+    glBindVertexArray(VAO);
+    
+    GLint MVPLoaction = glGetUniformLocation(shaderProgram, "MVP");
+    glUniformMatrix4fv(MVPLoaction, 1, GL_FALSE, glm::value_ptr(MVPMatrix));
 
-    
-    //make the new VBO active. Repeat here as a sanity check(may have changes since initialisation)
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    
-    //the 3 parameters is now filled out, the pipeline needs to know the size of each vertex
-    glVertexPointer(3, GL_FLOAT, sizeof(Vertex), NULL);
-    
-    //the last parameter basically says that the colors start 3 floats into each array element
-    glColorPointer(4, GL_FLOAT, sizeof(Vertex), (void**)(3*sizeof(float)));
-    
-    //establish array contains vertices (not normals, colors, texture coords etc)
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-    
-    //switch to modelview
-    glMatrixMode(GL_MODELVIEW);
-    //reset using identity matrix
-    glLoadIdentity();
-    
-    gluLookAt(0.0, 0.0, 6.0, 0.0, 0.0, -1.0f, 0.0, 1.0, 0.0);
-    
-    //translate
-    glTranslatef(xpos, ypos, 0.0f);    //actually draw the triangle giving the number of vertices provided
     glDrawElements(GL_TRIANGLES, sizeof(indices) /sizeof(GLuint), GL_UNSIGNED_INT, 0);
-
-    
-    
-//    //switch to modelview
-//    glMatrixMode(GL_MODELVIEW);
-//    //reset using the identity matrix
-//    glLoadIdentity();
-//    //Translate to -5.0f on the z axis
-//    glTranslatef(0.0f, 0.0f, -5.0f);
-//    //Begin drawing triangles
-//    glBegin(GL_TRIANGLES);
-//    glColor3f(1.0f, 0.0f, 0.0f);
-//    glVertex3f(-1.0f, 1.0f, 0.0f);
-//    glColor3f(1.0f, 1.0f, 0.0f);
-//    glVertex3f(-1.0f, -1.0f, 0.0f);
-//    glColor3f(1.0f, 0.0f, 1.0f);
-//    glVertex3f(1.0f, -1.0f, 0.0f);
-//    glEnd();
     
 }
 
 void update()
 {
+    projMatrix = perspective(45.0f, 640.0f / 480.0f, 0.1f, 100.0f);
     
+    viewMatrix = lookAt(vec3(0.0f, 0.0f, 10.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f, 1.0f, 0.0f));
+    
+    worldMatrix = translate(mat4(1.0f), vec3(0.0f, 0.0f, 0.0f));
+    
+    MVPMatrix = projMatrix*viewMatrix*worldMatrix;
 }
 
 void initScene()
 {
+    
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+    
+    
     //create buffer
     glGenBuffers(1, &VBO);
     //make the new vbo active
@@ -141,12 +126,45 @@ void initScene()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     //copy index data to the EBO
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    
+    //load and complile vertex shader
+    GLuint vertexShaderProgram = 0;
+    string vsPath = ASSET_PATH + SHADER_PATH + "/simpleVS.glsl";
+    vertexShaderProgram = loadShaderFromFile(vsPath, VERTEX_SHADER);
+    checkForCompilerErrors(vertexShaderProgram);
+    
+    //load and compile fragment shader
+    GLuint fragmentShaderProgram = 0;
+    string fsPath = ASSET_PATH + SHADER_PATH + "/simpleFS.glsl";
+    fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
+    checkForCompilerErrors(fragmentShaderProgram);
+    
+    //tell the shader that 0 is the position element
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), NULL);
+    
+    //link and attach shaders
+    shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShaderProgram);
+    glAttachShader(shaderProgram, fragmentShaderProgram);
+    glLinkProgram(shaderProgram);
+    checkForLinkErrors(shaderProgram);
+    
+    glBindAttribLocation(shaderProgram, 0, "vertexPosition");
+    
+    //now we can delete the VS & FS program
+    glDeleteShader(vertexShaderProgram);
+    glDeleteShader(fragmentShaderProgram);
+    
+    
 }
 
 void cleanUp()
 {
+    glDeleteProgram(shaderProgram);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
+    glDeleteVertexArrays(1, &VAO);
 }
 
 
@@ -163,8 +181,14 @@ int main(int argc, char * arg[])
         return -1;
     }
     
+    //ask for version 4.2 of OpenGL
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    
     SDL_Window * window = SDL_CreateWindow("SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480,
                                            SDL_WINDOW_OPENGL);
+    
     
     //create an OpenGL context associated with the window
     SDL_GLContext glContext = SDL_GL_CreateContext(window);
@@ -195,7 +219,18 @@ int main(int argc, char * arg[])
             
             if(event.type == SDL_KEYDOWN)
             {
-                
+                if (event.key.keysym.sym == SDLK_UP) {
+                    ypos += 0.2f;
+                }
+                if (event.key.keysym.sym == SDLK_DOWN) {
+                    ypos -= 0.2f;
+                }
+                if (event.key.keysym.sym == SDLK_LEFT) {
+                    xpos -= 0.2f;
+                }
+                if (event.key.keysym.sym == SDLK_RIGHT) {
+                    xpos += 0.2f;
+                }
             }
             
         }
