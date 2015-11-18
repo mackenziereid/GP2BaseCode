@@ -6,30 +6,30 @@
 Vertex verts[]={
 //Front
 { vec3(-0.5f, 0.5f, 0.5f),
-    vec4(1.0f, 0.0f, 1.0f, 1.0f) },// Top Left
+    vec4(1.0f, 0.0f, 1.0f, 1.0f), vec2(0.0f, 0.0f) },// Top Left
 
 { vec3(-0.5f, -0.5f, 0.5f),
-    vec4(1.0f, 1.0f, 0.0f, 1.0f) },// Bottom Left
+    vec4(1.0f, 1.0f, 0.0f, 1.0f), vec2(0.0f, 1.0f) },// Bottom Left
 
 { vec3(0.5f, -0.5f, 0.5f),
-    vec4(0.0f, 1.0f, 1.0f, 1.0f) }, //Bottom Right
+    vec4(0.0f, 1.0f, 1.0f, 1.0f) , vec2(1.0f, 1.0f)}, //Bottom Right
 
 { vec3(0.5f, 0.5f, 0.5f),
-    vec4(1.0f, 0.0f, 1.0f, 1.0f) },// Top Right
+    vec4(1.0f, 0.0f, 1.0f, 1.0f) , vec2(1.0f, 0.0f)},// Top Right
 
 
 //back
 { vec3(-0.5f, 0.5f, -0.5f),
-    vec4(1.0f, 0.0f, 1.0f, 1.0f) },// Top Left
+    vec4(1.0f, 0.0f, 1.0f, 1.0f) , vec2(0.0f, 0.0f)},// Top Left
 
 { vec3(-0.5f, -0.5f, -0.5f),
-    vec4(1.0f, 1.0f, 0.0f, 1.0f) },// Bottom Left
+    vec4(1.0f, 1.0f, 0.0f, 1.0f) , vec2(0.0f, 1.0f)},// Bottom Left
 
 { vec3(0.5f, -0.5f, -0.5f),
-    vec4(0.0f, 1.0f, 1.0f, 1.0f) }, //Bottom Right
+    vec4(0.0f, 1.0f, 1.0f, 1.0f) , vec2(1.0f, 1.0f)}, //Bottom Right
 
 { vec3(0.5f, 0.5f, -0.5f),
-    vec4(1.0f, 0.0f, 1.0f, 1.0f) },// Top Right
+    vec4(1.0f, 0.0f, 1.0f, 1.0f) , vec2(1.0f, 0.0f)},// Top Right
 
 };
 
@@ -92,6 +92,9 @@ void initScene()
 
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(sizeof(vec3)));
+    
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)((sizeof(vec3) + sizeof(vec4))));
 
   GLuint vertexShaderProgram=0;
   string vsPath = ASSET_PATH + SHADER_PATH + "/simpleColourVS.glsl";
@@ -168,6 +171,13 @@ int main(int argc, char * arg[])
 
         return -1;
 	}
+    
+    int imageInitFlags = IMG_INIT_JPG | IMG_INIT_PNG;
+    int returnInitFlags = IMG_Init(imageInitFlags);
+    if(((returnInitFlags) & (imageInitFlags)) != imageInitFlags)
+    {
+        cout << "ERROR SDL_IMAGE Init " << IMG_GetError() << endl;
+    }
 
 	//Request opengl 4.1 context, Core Context
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,SDL_GL_CONTEXT_PROFILE_CORE);
@@ -234,6 +244,7 @@ int main(int argc, char * arg[])
     cleanUp();
     SDL_GL_DeleteContext(glcontext);
     SDL_DestroyWindow(window);
+    IMG_Quit();
     SDL_Quit();
 
     return 0;
