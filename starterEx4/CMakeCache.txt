@@ -173,6 +173,15 @@ CMAKE_USE_RELATIVE_PATHS:BOOL=OFF
 CMAKE_VERBOSE_MAKEFILE:BOOL=OFF
 
 //Path to a file.
+FBX_INCLUDE_DIR:PATH=/Applications/Autodesk/FBX SDK/2015.1/include
+
+//Path to a library.
+FBX_LIBRARY:FILEPATH=/Applications/Autodesk/FBX SDK/2015.1/lib/clang/release/libfbxsdk.a
+
+//Path to a library.
+FBX_LIBRARY_DEBUG:FILEPATH=/Applications/Autodesk/FBX SDK/2015.1/lib/clang/debug/libfbxsdk.dylib
+
+//Path to a file.
 GLEW_INCLUDE_DIR:PATH=/opt/local/include
 
 //Path to a library.
@@ -207,6 +216,21 @@ SDL2_INCLUDE_DIR:PATH=/Library/Frameworks/SDL2.framework/Headers
 
 //Where the SDL2 Library can be found
 SDL2_LIBRARY:STRING=/Library/Frameworks/SDL2.framework;-framework Cocoa
+
+//The directory containing a CMake configuration file for SDL2_TFF.
+SDL2_TFF_DIR:PATH=SDL2_TFF_DIR-NOTFOUND
+
+//Path to a file.
+SDL2_TTF_INCLUDE_DIR:PATH=/opt/local/include/SDL2
+
+//Path to a library.
+SDL2_TTF_LIBRARY_DEBUG:FILEPATH=SDL2_TTF_LIBRARY_DEBUG-NOTFOUND
+
+//Path to a library.
+SDL2_TTF_LIBRARY_RELEASE:FILEPATH=/opt/local/lib/libSDL2_ttf.dylib
+
+//The directory containing a CMake configuration file for SDL2_tff.
+SDL2_tff_DIR:PATH=SDL2_tff_DIR-NOTFOUND
 
 
 ########################
@@ -343,6 +367,8 @@ FIND_PACKAGE_MESSAGE_DETAILS_GLM:INTERNAL=[/opt/local/include][v()]
 FIND_PACKAGE_MESSAGE_DETAILS_OpenGL:INTERNAL=[/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/OpenGL.framework][/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/OpenGL.framework][v()]
 //Details about finding SDL2
 FIND_PACKAGE_MESSAGE_DETAILS_SDL2:INTERNAL=[/Library/Frameworks/SDL2.framework;-framework Cocoa][/Library/Frameworks/SDL2.framework/Headers][v()]
+//Details about finding SDL2_TTF
+FIND_PACKAGE_MESSAGE_DETAILS_SDL2_TTF:INTERNAL=[/opt/local/lib/libSDL2_ttf.dylib][/opt/local/include/SDL2][v()]
 //ADVANCED property for variable: GLEW_INCLUDE_DIR
 GLEW_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: GLEW_LIBRARY
@@ -357,7 +383,13 @@ OPENGL_gl_LIBRARY-ADVANCED:INTERNAL=1
 OPENGL_glu_LIBRARY-ADVANCED:INTERNAL=1
 //Stored Xcode object GUID
 PROJECT_GP2BaseCode_GUID_CMAKE:INTERNAL=2F11A579F1824B0287469FF4
-SDL2_LIBRARY_TEMP:INTERNAL=/Library/Frameworks/SDL2.framework;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa
+SDL2_LIBRARY_TEMP:INTERNAL=/Library/Frameworks/SDL2.framework;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa
+//ADVANCED property for variable: SDL2_TTF_INCLUDE_DIR
+SDL2_TTF_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: SDL2_TTF_LIBRARY_DEBUG
+SDL2_TTF_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: SDL2_TTF_LIBRARY_RELEASE
+SDL2_TTF_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
 //Stored Xcode object GUID
 ZERO_CHECK_GUID_CMAKE:INTERNAL=531D9CA8A9DD4F14ACB9608E
 

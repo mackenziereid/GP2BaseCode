@@ -24,9 +24,11 @@
 /Applications/CMake.app/Contents/share/cmake-3.3/Modules/Platform/Darwin.cmake\
 /Applications/CMake.app/Contents/share/cmake-3.3/Modules/Platform/UnixPaths.cmake\
 /Users/MHReid/Documents/GP2-Labs/GP2BaseCode/CMakeLists.txt\
+/Users/MHReid/Documents/GP2-Labs/GP2BaseCode/cmake/FindFBX.cmake\
 /Users/MHReid/Documents/GP2-Labs/GP2BaseCode/cmake/FindGLM.cmake\
 /Users/MHReid/Documents/GP2-Labs/GP2BaseCode/cmake/FindSDL2.cmake\
 /Users/MHReid/Documents/GP2-Labs/GP2BaseCode/cmake/FindSDL2_Image.cmake\
+/Users/MHReid/Documents/GP2-Labs/GP2BaseCode/cmake/FindSDL2_ttf.cmake\
 /Users/MHReid/Documents/GP2-Labs/GP2BaseCode/starterEx4/CMakeFiles/3.3.2/CMakeCCompiler.cmake\
 /Users/MHReid/Documents/GP2-Labs/GP2BaseCode/starterEx4/CMakeFiles/3.3.2/CMakeCXXCompiler.cmake\
 /Users/MHReid/Documents/GP2-Labs/GP2BaseCode/starterEx4/CMakeFiles/3.3.2/CMakeSystem.cmake
