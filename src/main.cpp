@@ -6,6 +6,8 @@
 #include "Mesh.h"
 #include "FileSystem.h"
 #include "FBXLoader.h"
+#include "GameObject.h"
+#include "Cube.h"
 
 //matrices
 mat4 viewMatrix;
@@ -15,7 +17,7 @@ mat4 MVPMatrix;
 
 vec3 cameraPosition = vec3(0.0f, 50.0f, 50.0f);
 
-vec4 ambientMaterialColour = vec4(0.1f, 0.1f, 0.1f, 1.0f);
+vec4 ambientMaterialColour = vec4(0.3f, 0.3f, 0.3f, 1.0f);
 vec4 ambientLightColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 vec4 diffuseLightColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -38,70 +40,135 @@ GLuint diffuseMap;
 
 GLuint fontTextureMap;
 
-void initScene()
+//variables for framebuffer
+GLuint FBOTexture;
+GLuint FBODepthBuffer;
+GLuint frameBufferObject;
+GLuint fullScreenVAO;
+GLuint fullScreenVBO;
+GLuint fullScreenShaderProgram;
+
+const int FRAME_BUFFER_WIDTH = 640;
+const int FRAME_BUFFER_HEIGHT = 480;
+
+//timing for ripple
+unsigned int lastTicks, currentTicks;
+float elapsedTime;
+float totalTime;
+
+vec2 screenResolution = vec2(FRAME_BUFFER_WIDTH,FRAME_BUFFER_HEIGHT);
+
+shared_ptr<GameObject> gameObject;
+
+void createFrameBuffer()
 {
     
-    string modelPath = ASSET_PATH + MODEL_PATH + "/utah-teapot.fbx";
-    loadFBXFromFile(modelPath, &currentMesh);
-    //Generate Vertex Array
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    //create the texture
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1, &FBOTexture);
+    glBindTexture(GL_TEXTURE_2D, FBOTexture);
     
-    glBufferData(GL_ARRAY_BUFFER, currentMesh.getNumVerts()*sizeof(Vertex), &currentMesh.vertices[0], GL_STATIC_DRAW);
+    //set up the initial states
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
-    //create buffer
-    glGenBuffers(1, &EBO);
-    //Make the EBO active
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    //Copy Index data to the EBO
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, currentMesh.getNumIndices()*sizeof(int), &currentMesh.indices[0], GL_STATIC_DRAW);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     
-    cout<<" Index Numbers "<<currentMesh.getNumIndices()<<" Vertex Numbers "<<currentMesh.getNumVerts()<<endl;
+    //create the depth buffer
+    glGenRenderbuffers(1, &FBODepthBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, FBODepthBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
     
-    //Tell the shader that 0 is the position element
+    //create the framebuffer object
+    glGenFramebuffers(1, &frameBufferObject);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, FBOTexture, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, FBODepthBuffer);
+    
+    GLenum status;
+    if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
+        cout << "Issue with Framebuffers" << endl;
+    }
+    
+    float vertices[] =
+    {
+        -1, -1,
+        1, -1,
+        -1, 1,
+        1, 1,
+    };
+
+    glGenVertexArrays(1, &fullScreenVAO);
+    glBindVertexArray(fullScreenVAO);
+    
+    glGenBuffers(1, &fullScreenVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, fullScreenVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), NULL);
-    
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(sizeof(vec3)));
-    
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(sizeof(vec3) + sizeof(vec4)));
-    
-    glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(sizeof(vec3) + sizeof(vec4) + sizeof(vec2)));
+    glVertexAttribPointer(0,  //attribute
+                          2,  //number of elements per vertex
+                          GL_FLOAT,   //the type of each element
+                          GL_FALSE,   //take out values as is
+                          0,  //no extra data between positions
+                          0  //offset of the first element
+                          );
     
     GLuint vertexShaderProgram = 0;
-    string vsPath = ASSET_PATH + SHADER_PATH + "/specularVS.glsl";
+    string vsPath = ASSET_PATH + SHADER_PATH + "/simplePostPorcessVS.glsl";
     vertexShaderProgram = loadShaderFromFile(vsPath, VERTEX_SHADER);
     checkForCompilerErrors(vertexShaderProgram);
     
     GLuint fragmentShaderProgram = 0;
-    string fsPath = ASSET_PATH + SHADER_PATH + "/specularFS.glsl";
+    string fsPath = ASSET_PATH + SHADER_PATH + "/simplePostPorcessFS.glsl";
     fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
     checkForCompilerErrors(fragmentShaderProgram);
     
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShaderProgram);
-    glAttachShader(shaderProgram, fragmentShaderProgram);
+    fullScreenShaderProgram = glCreateProgram();
+    glAttachShader(fullScreenShaderProgram, vertexShaderProgram);
+    glAttachShader(fullScreenShaderProgram, fragmentShaderProgram);
     
-    //Link attributes
-    glBindAttribLocation(shaderProgram, 0, "vertexPosition");
-    glBindAttribLocation(shaderProgram, 1, "vertexColour");
-    glBindAttribLocation(shaderProgram, 2, "vertexTexCoords");
-    glBindAttribLocation(shaderProgram, 3, "vertexNormal");
+    //bind the attrib location
+    glBindAttribLocation(fullScreenShaderProgram, 0, "vertexPosition");
     
-    glLinkProgram(shaderProgram);
-    checkForLinkErrors(shaderProgram);
-    //now we can delete the VS & FS Programs
+    glLinkProgram(fullScreenShaderProgram);
+    checkForLinkErrors(fullScreenShaderProgram);
+    //now to delete
     glDeleteShader(vertexShaderProgram);
     glDeleteShader(fragmentShaderProgram);
+    
+}
+
+void cleanUpFrameBuffer()
+{
+    glDeleteProgram(fullScreenShaderProgram);
+    glDeleteBuffers(1, &fullScreenVBO);
+    glDeleteVertexArrays(1, &fullScreenVAO);
+    glDeleteFramebuffers(1, &frameBufferObject);
+    glDeleteRenderbuffers(1, &FBODepthBuffer);
+    glDeleteTextures(1, &FBOTexture);
+}
+
+void initScene()
+{
+    createFrameBuffer();
+    gameObject = shared_ptr<GameObject>(new GameObject);
+    
+    gameObject->createBuffer(cubeVerts, numberOfCubeVerts, cubeIndices, numberOfCubeIndices);
+    
+    string vsPath = ASSET_PATH + SHADER_PATH + "/simpleVS.glsl";
+    string fsPath = ASSET_PATH _ SHADER_PATH + "/simpleFS.glsl";
+    gameObject->loadShader(vsPath, fsPath);
+   
 }
 
 void cleanUp()
 {
+    
+    cleanUpFrameBuffer();
     glDeleteTextures(1, &diffuseMap);
     glDeleteTextures(1, &fontTextureMap);
     
@@ -113,20 +180,24 @@ void cleanUp()
 
 void update()
 {
+   
+    
   projMatrix = glm::perspective(45.0f, 640.0f / 480.0f, 0.1f, 100.0f);
 
   viewMatrix = glm::lookAt(cameraPosition, vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
 
   worldMatrix= glm::translate(mat4(1.0f), vec3(0.0f,0.0f,0.0f));
 
-  MVPMatrix=projMatrix*viewMatrix*worldMatrix;
+    gameObject->update();
 }
 
-void render()
+void renderScene()
 {
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
     //old imediate mode!
     //Set the clear colour(background)
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     //clear the colour and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -167,6 +238,39 @@ void render()
     glBindVertexArray(VAO);
     
     glDrawElements(GL_TRIANGLES, currentMesh.getNumIndices(), GL_UNSIGNED_INT, 0);
+}
+
+void renderPostProcessing()
+{
+ 
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //Set the clear colour(background)
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    //clear the colour and depth buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glUseProgram(fullScreenShaderProgram);
+    
+    GLint textureLocation = glGetUniformLocation(fullScreenShaderProgram, "texture0");
+    GLuint timeLocation = glGetUniformLocation(fullScreenShaderProgram, "time");
+    GLuint resolutionLocation = glGetUniformLocation(fullScreenShaderProgram, "resolution");
+    
+    glUniform1f(timeLocation, totalTime);
+    glUniform2fv(resolutionLocation,1,value_ptr(screenResolution));
+  
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, FBOTexture);
+    glUniform1i(textureLocation, 0);
+    
+    glBindVertexArray(fullScreenVAO);
+    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+void render()
+{
+    renderScene();
+    renderPostProcessing();
 
 }
 
@@ -240,6 +344,7 @@ int main(int argc, char * arg[])
                   switch( event.key.keysym.sym )
                   {
                     case SDLK_LEFT:
+                      //cout<<totalTime<<endl;
                       break;
                       case SDLK_RIGHT:
                       break;

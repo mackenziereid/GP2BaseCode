@@ -14,9 +14,6 @@
 # EXTERNAL cache entries
 ########################
 
-//Path to a program.
-CMAKE_AR:FILEPATH=/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar
-
 //Choose the type of build, options are: None(CMAKE_CXX_FLAGS or
 // CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.
 CMAKE_BUILD_TYPE:STRING=
@@ -79,9 +76,6 @@ CMAKE_INSTALL_NAME_TOOL:FILEPATH=/usr/bin/install_name_tool
 //Install path prefix, prepended onto install directories.
 CMAKE_INSTALL_PREFIX:PATH=/usr/local
 
-//Path to a program.
-CMAKE_LINKER:FILEPATH=/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld
-
 //Flags used by the linker during the creation of modules.
 CMAKE_MODULE_LINKER_FLAGS:STRING=
 
@@ -97,15 +91,6 @@ CMAKE_MODULE_LINKER_FLAGS_RELEASE:STRING=
 //Flags used by the linker during Release with Debug Info builds.
 CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 
-//Path to a program.
-CMAKE_NM:FILEPATH=/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm
-
-//Path to a program.
-CMAKE_OBJCOPY:FILEPATH=CMAKE_OBJCOPY-NOTFOUND
-
-//Path to a program.
-CMAKE_OBJDUMP:FILEPATH=CMAKE_OBJDUMP-NOTFOUND
-
 //Build architectures for OSX
 CMAKE_OSX_ARCHITECTURES:STRING=
 
@@ -119,9 +104,6 @@ CMAKE_OSX_SYSROOT:PATH=/Applications/Xcode-beta.app/Contents/Developer/Platforms
 
 //Value Computed by CMake
 CMAKE_PROJECT_NAME:STATIC=GP2BaseCode
-
-//Path to a program.
-CMAKE_RANLIB:FILEPATH=/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib
 
 //Flags used by the linker during the creation of dll's.
 CMAKE_SHARED_LINKER_FLAGS:STRING=
@@ -159,9 +141,6 @@ CMAKE_STATIC_LINKER_FLAGS_RELEASE:STRING=
 
 //Flags used by the linker during Release with Debug Info builds.
 CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
-
-//Path to a program.
-CMAKE_STRIP:FILEPATH=/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip
 
 //If true, cmake will use relative paths in makefiles and projects.
 CMAKE_USE_RELATIVE_PATHS:BOOL=OFF
@@ -217,9 +196,6 @@ SDL2_INCLUDE_DIR:PATH=/Library/Frameworks/SDL2.framework/Headers
 //Where the SDL2 Library can be found
 SDL2_LIBRARY:STRING=/Library/Frameworks/SDL2.framework;-framework Cocoa
 
-//The directory containing a CMake configuration file for SDL2_TFF.
-SDL2_TFF_DIR:PATH=SDL2_TFF_DIR-NOTFOUND
-
 //Path to a file.
 SDL2_TTF_INCLUDE_DIR:PATH=/opt/local/include/SDL2
 
@@ -229,18 +205,13 @@ SDL2_TTF_LIBRARY_DEBUG:FILEPATH=SDL2_TTF_LIBRARY_DEBUG-NOTFOUND
 //Path to a library.
 SDL2_TTF_LIBRARY_RELEASE:FILEPATH=/opt/local/lib/libSDL2_ttf.dylib
 
-//The directory containing a CMake configuration file for SDL2_tff.
-SDL2_tff_DIR:PATH=SDL2_tff_DIR-NOTFOUND
-
 
 ########################
 # INTERNAL cache entries
 ########################
 
 //Stored Xcode object GUID
-ALL_BUILD_GUID_CMAKE:INTERNAL=32AD2D22910B43C2BD1053C1
-//ADVANCED property for variable: CMAKE_AR
-CMAKE_AR-ADVANCED:INTERNAL=1
+ALL_BUILD_GUID_CMAKE:INTERNAL=FEEC4E61C6FD4BE5B9A535A5
 //This is the directory where this CMakeCache.txt was created
 CMAKE_CACHEFILE_DIR:INTERNAL=/Users/MHReid/Documents/GP2-Labs/GP2BaseCode/starterEx4
 //Major version of cmake used to create the current loaded cache
@@ -275,8 +246,6 @@ CMAKE_C_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
 CMAKE_C_FLAGS_RELEASE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_C_FLAGS_RELWITHDEBINFO
 CMAKE_C_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
-//Executable file format
-CMAKE_EXECUTABLE_FORMAT:INTERNAL=Unknown
 //ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS
 CMAKE_EXE_LINKER_FLAGS-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS_DEBUG
@@ -300,8 +269,6 @@ CMAKE_GENERATOR_TOOLSET:INTERNAL=
 CMAKE_HOME_DIRECTORY:INTERNAL=/Users/MHReid/Documents/GP2-Labs/GP2BaseCode
 //ADVANCED property for variable: CMAKE_INSTALL_NAME_TOOL
 CMAKE_INSTALL_NAME_TOOL-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_LINKER
-CMAKE_LINKER-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS
 CMAKE_MODULE_LINKER_FLAGS-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS_DEBUG
@@ -312,16 +279,8 @@ CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
 CMAKE_MODULE_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO
 CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_NM
-CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
 CMAKE_NUMBER_OF_LOCAL_GENERATORS:INTERNAL=1
-//ADVANCED property for variable: CMAKE_OBJCOPY
-CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_OBJDUMP
-CMAKE_OBJDUMP-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_RANLIB
-CMAKE_RANLIB-ADVANCED:INTERNAL=1
 //Path to CMake installation.
 CMAKE_ROOT:INTERNAL=/Applications/CMake.app/Contents/share/cmake-3.3
 //ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS
@@ -348,13 +307,9 @@ CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
 CMAKE_STATIC_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO
 CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_STRIP
-CMAKE_STRIP-ADVANCED:INTERNAL=1
 //Suppress Warnings that are meant for the author of the CMakeLists.txt
 // files.
 CMAKE_SUPPRESS_DEVELOPER_WARNINGS:INTERNAL=FALSE
-//uname command
-CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_USE_RELATIVE_PATHS
 CMAKE_USE_RELATIVE_PATHS-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
@@ -374,7 +329,7 @@ GLEW_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: GLEW_LIBRARY
 GLEW_LIBRARY-ADVANCED:INTERNAL=1
 //Stored Xcode object GUID
-GP2BaseCode_GUID_CMAKE:INTERNAL=481AD5B6EAD545D8BFC485C3
+GP2BaseCode_GUID_CMAKE:INTERNAL=D8B271062A4046A7B6607BF6
 //ADVANCED property for variable: OPENGL_INCLUDE_DIR
 OPENGL_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: OPENGL_gl_LIBRARY
@@ -382,8 +337,8 @@ OPENGL_gl_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: OPENGL_glu_LIBRARY
 OPENGL_glu_LIBRARY-ADVANCED:INTERNAL=1
 //Stored Xcode object GUID
-PROJECT_GP2BaseCode_GUID_CMAKE:INTERNAL=2F11A579F1824B0287469FF4
-SDL2_LIBRARY_TEMP:INTERNAL=/Library/Frameworks/SDL2.framework;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa
+PROJECT_GP2BaseCode_GUID_CMAKE:INTERNAL=3C7DFA44D9B74CD392F11227
+SDL2_LIBRARY_TEMP:INTERNAL=/Library/Frameworks/SDL2.framework;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa;-framework Cocoa
 //ADVANCED property for variable: SDL2_TTF_INCLUDE_DIR
 SDL2_TTF_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: SDL2_TTF_LIBRARY_DEBUG
@@ -391,5 +346,5 @@ SDL2_TTF_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: SDL2_TTF_LIBRARY_RELEASE
 SDL2_TTF_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
 //Stored Xcode object GUID
-ZERO_CHECK_GUID_CMAKE:INTERNAL=531D9CA8A9DD4F14ACB9608E
+ZERO_CHECK_GUID_CMAKE:INTERNAL=B565C72407C94CAABC667BCF
 
