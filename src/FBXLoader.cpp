@@ -37,7 +37,7 @@ FbxString GetAttributeTypeName(FbxNodeAttribute::EType type) {
     }
 }
 
-bool loadFBXFromFile(const string& filename, MeshData *meshData)
+shared_ptr<GameObject> loadFBXFromFile(const string& filename, MeshData *meshData)
 {
     level = 0;
     // Initialize the SDK manager. This object handles memory management.
@@ -82,7 +82,7 @@ bool loadFBXFromFile(const string& filename, MeshData *meshData)
     return true;
 }
 
-void processNode(FbxNode *node, MeshData *meshData)
+void processNode(FbxNode *node, shared_ptr<GameObject> parent)
 {
     PrintTabs();
     const char* nodeName = node->GetName();
@@ -107,7 +107,7 @@ void processNode(FbxNode *node, MeshData *meshData)
     PrintTabs();
 }
 
-void processAttribute(FbxNodeAttribute * attribute, MeshData *meshData)
+void processAttribute(FbxNodeAttribute * attribute, shared_ptr<GameObject> gameObject)
 {
     if (!attribute) return;
     FbxString typeName = GetAttributeTypeName(attribute->GetAttributeType());
@@ -121,7 +121,7 @@ void processAttribute(FbxNodeAttribute * attribute, MeshData *meshData)
     }
 }
 
-void processMesh(FbxMesh * mesh, MeshData *meshData)
+void processMesh(FbxMesh * mesh, shared_ptr<GameObject> gameObject)
 {
     
     int numVerts = mesh->GetControlPointsCount();

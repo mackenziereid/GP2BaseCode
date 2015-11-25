@@ -16,6 +16,9 @@ GameObject::GameObject()
     m_Position = vec3(0.0f, 0.0f, 0.0f);
     m_Rotation = vec3(0.0f, 0.0f, 0.0f);
     m_Scale = vec3(1.0f, 1.0f, 1.0f);
+    
+    m_ParentGameObjects = NULL;
+    m_ChildGameObjects.clear();
 }
 
 GameObject::~GameObject()
@@ -28,6 +31,11 @@ GameObject::~GameObject()
 
 void GameObject::update()
 {
+    mat4 parentModel = mat4(1.0f);
+    if (m_ParentGameObjects) {
+        parentModel = m_ParentGameObjects->getModelMatrix();
+    }
+    
     mat4 translationMatrix = translate(mat4(1.0f), m_Position);
     mat4 scaleMatrix = scale(mat4(1.0f), m_Scale);
     mat4 rotationMatrix = rotate(mat4(1.0f), m_Rotation.x, vec3(1.0f, 0.0f, 0.0f))*
@@ -35,6 +43,11 @@ void GameObject::update()
                           rotate(mat4(1.0f), m_Rotation.z, vec3(0.0f, 0.0f, 1.0f));
     
     m_ModelMatrix = scaleMatrix*rotationMatrix*translationMatrix;
+    m_ModelMatrix = m_ModelMatrix*parentModel;
+    
+    for (auto iter = m_ChildGameObjects.begin(); iter != m_ChildGameObjects.end(); iter++) {
+        (*iter)->update();
+    }
 }
 
 void GameObject::createBuffer(Vertex *pVerts, int numVerts, int *pIndices, int numOfIndices)
@@ -73,14 +86,10 @@ void GameObject::createBuffer(Vertex *pVerts, int numVerts, int *pIndices, int n
 
 void GameObject::loadShader(const string& vsFilename, const string& fsFilename)
 {
-    GLuint vertexShaderProgram = 0;
-    string vsPath = ASSET_PATH + SHADER_PATH + "/specularVS.glsl";
-    vertexShaderProgram = loadShaderFromFile(vsPath, VERTEX_SHADER);
+    GLuint vertexShaderProgram = loadShaderFromFile(vsFilename, VERTEX_SHADER);
     checkForCompilerErrors(vertexShaderProgram);
     
-    GLuint fragmentShaderProgram = 0;
-    string fsPath = ASSET_PATH + SHADER_PATH + "/specularFS.glsl";
-    fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
+    GLuint fragmentShaderProgram = loadShaderFromFile(fsFilename, FRAGMENT_SHADER);
     checkForCompilerErrors(fragmentShaderProgram);
     
     m_ShaderProgram = glCreateProgram();
